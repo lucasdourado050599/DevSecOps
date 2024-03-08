@@ -1,0 +1,28 @@
+trigger:
+  branches:
+    include:
+    - refs/heads/main
+pool:
+  vmImage: windows-latest
+
+jobs:
+- job: Job_1
+  displayName: Agent job 1
+  steps:
+    - task: Gitleaks@2
+      displayName: Gitleaks scan
+      inputs:
+        scanmode: all
+        taskfail: false
+        reportformat: json
+        reportname: 'REPORT_GITLEAKS_SCAN'
+      
+    - task: AzureFileCopy@2
+      displayName: AzureBlob File Copy
+      inputs:
+        SourcePath: '$(Agent.TempDirectory)/REPORT_GITLEAKS_SCAN.json'
+        azureSubscription: 'SUA SERVICE CONECTION'
+        Destination: 'AzureBlob'
+        storage: 'SEU STORAGE'
+        ContainerName: 'SEU CONTAINER'
+
